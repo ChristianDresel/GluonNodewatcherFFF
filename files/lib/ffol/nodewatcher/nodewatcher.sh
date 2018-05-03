@@ -267,13 +267,14 @@ crawl() {
     err "$(date): Collecting information about conected clients"
     #CLIENTS
     client_count=0
-    dataclient=""
-    CLIENT_INTERFACES=$(bridge link | awk '$2 !~/^bat/{ printf $2" " }')
-    for clientif in ${CLIENT_INTERFACES}; do
-        local cc=$(bridge fdb show br "$MESH_INTERFACE" brport "$clientif" | grep -v self | grep -v permanent -c)
-        client_count=$((client_count + cc))
-        dataclient="$dataclient<$clientif>$cc</$clientif>"
-    done
+    #dataclient=""
+    #CLIENT_INTERFACES=$(bridge link | awk '$2 !~/^bat/{ printf $2" " }')
+    #for clientif in ${CLIENT_INTERFACES}; do
+    #    local cc=$(bridge fdb show br "$MESH_INTERFACE" brport "$clientif" | grep -v self | grep -v permanent -c)
+    #    client_count=$((client_count + cc))
+    #    dataclient="$dataclient<$clientif>$cc</$clientif>" <-- we need this again?
+    #done
+    client_count=$(batctl tl | grep -v '.P' | grep -v MainIF | grep -v Client | wc -l)
 
     dataair=""
     w2dump="$(iw dev w2ap survey dump 2> /dev/null | sed '/Survey/,/\[in use\]/d')"
